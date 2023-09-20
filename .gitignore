@@ -1,0 +1,43 @@
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore database files
+*.sqlite3
+
+# Ignore compiled Python files
+__pycache__/
+
+# Ignore settings files (local settings should not be in version control)
+*.settings
+
+# Ignore log files
+*.log
+
+# Ignore media files (user-uploaded content)
+media/
+
+# Ignore static files (collected static files, e.g., CSS, JavaScript)
+static/
+
+# Ignore secret key configuration
+secret_key.txt
+
+# Ignore IDE and text editor specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.pyc
+
+# Ignore system and temporary files
+.DS_Store
+Thumbs.db
+
+# Ignore pipenv/virtualenv files
+Pipfile
+Pipfile.lock
+
+# Ignore any other files or directories specific to your project
+# Add them as needed
