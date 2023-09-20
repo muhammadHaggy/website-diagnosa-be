@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Run gunicorn
-CMD ["gunicorn", "your_project.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "diagnosa_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
