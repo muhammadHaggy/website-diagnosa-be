@@ -1,0 +1,28 @@
+name: Deploy Django App
+
+on:
+  push:
+    branches:
+      - master 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup SSH Agent
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Deploy to VPS
+      run: |
+        ssh username@${{ secrets.SERVER_HOST }} "cd website-diagnosa-be && git pull && docker-compose up --build -d"
+      env:
+        DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
