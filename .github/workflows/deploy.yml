@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy to VPS
       run: |
-        ssh Acer@${{ secrets.SERVER_HOST }} "cd website-diagnosa-be && git pull && docker compose up --build -d"
+        ssh Acer@${{ secrets.SERVER_HOST }} "cd website-diagnosa-be && git pull && docker-compose up --build -d"
       env:
         DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
