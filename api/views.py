@@ -19,11 +19,10 @@ def getPred(request):
 def addData(request):
     serializer = FormDataSerializer(data=request.data)
     if serializer.is_valid():
-        calculateIpaPred(request)
-    return Response(serializer.data)
+        response = calculateIpaPred(request)
+    return Response(response.data)
 
 def calculateIpaPred(request):
-    
     serializer = FormDataSerializer(data=request.data)
     proba_list = [10.4, 14.8, 20.6, 28.0, 36.8, 46.6, 56.6, 66.1]
     score = 0
@@ -49,4 +48,4 @@ def calculateIpaPred(request):
         form_data = form_data_instance
     )
     ipa_pred_instance.save()
-    return score
+    return PredDataSerializer(ipa_pred_instance)
