@@ -13,7 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the current directory contents into the container at /app
 COPY . /app/
-COPY nginx.conf /etc/nginx/conf.d/default.conf  # Copy the Nginx configuration file
 
 ENV PATH="/usr/local/bin:$PATH"
 
