@@ -28,6 +28,7 @@ def calculateIpaPred(request):
     score = 0
     if serializer.is_valid():
         validated_data = serializer.validated_data
+        is_probable = validated_data.get('is_probable')
         is_pulmonary_TB = validated_data.get('is_pulmonary_TB')
         has_solid_organ_malignancy = validated_data.get('has_solid_organ_malignancy')
         is_galactomannan_positive = validated_data.get('is_galactomannan_positive')
@@ -43,6 +44,7 @@ def calculateIpaPred(request):
     ipa_proba = proba_list[score]
     form_data_instance = serializer.save()
     ipa_pred_instance = IPAPrediction.objects.create(
+        is_probable = is_probable,
         ipa_prob = ipa_proba,
         total_score = score,
         form_data = form_data_instance
