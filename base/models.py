@@ -14,3 +14,4 @@ class IPAPrediction(models.Model):
     total_score = models.IntegerField()  
     form_data = models.ForeignKey(FormData, on_delete=models.CASCADE)
     is_probable = models.BooleanField(default=False)
+    is_high_risk = models.BooleanField(default=False)

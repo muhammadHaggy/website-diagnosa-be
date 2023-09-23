@@ -43,7 +43,13 @@ def calculateIpaPred(request):
             score += 1
     ipa_proba = proba_list[score]
     form_data_instance = serializer.save()
+    is_high_risk = False
+    if (score >= 2):
+        is_high_risk = True
+    else:
+        is_high_risk = False
     ipa_pred_instance = IPAPrediction.objects.create(
+        is_high_risk = is_high_risk,
         is_probable = is_probable,
         ipa_prob = ipa_proba,
         total_score = score,
