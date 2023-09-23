@@ -23,4 +23,4 @@ services:
       - ./webroot:/var/www/html
     depends_on:
       - nginx
-    command: certonly --webroot --webroot-path=/var/www/html --email diagnosaipa@gmail.com --agree-tos --no-eff-email --staging -d 34.68.83.48
+    command: certonly --webroot --webroot-path=/var/www/html --email diagnosaipa@gmail.com --agree-tos --no-eff-email --staging -d diagnosaapi.ddns.net
