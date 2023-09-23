@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-px%_nj38apl*^-ai215*n&s3k$+k#^tiuawp1%0y)gekn1j=5q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['api.mikostop.com']
 CORS_ALLOW_ALL_ORIGINS = True
 
 
