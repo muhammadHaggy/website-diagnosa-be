@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
@@ -15,3 +16,4 @@ class IPAPrediction(models.Model):
     form_data = models.ForeignKey(FormData, on_delete=models.CASCADE)
     is_probable = models.BooleanField(default=False)
     is_high_risk = models.BooleanField(default=False)
+    submission_date = models.DateTimeField(default=timezone.now)
