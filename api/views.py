@@ -11,9 +11,11 @@ def getData(request):
 
 @api_view(['GET'])
 def getPred(request):
-    items = IPAPrediction.objects.all()
-    serializer = PredDataSerializer(items, many=True)
-    return Response(serializer.data)
+    if request.user.is_authenticated and request.user.groups.filter(name='Admin').exists():
+        items = IPAPrediction.objects.all()
+        serializer = PredDataSerializer(items, many=True)
+        return Response(serializer.data)
+    return Response({"detail": "Permission Denied"}, status=403)
 
 @api_view(['POST'])
 def addData(request):
@@ -57,3 +59,48 @@ def calculateIpaPred(request):
     )
     ipa_pred_instance.save()
     return PredDataSerializer(ipa_pred_instance)
+
+from django.contrib.auth.models import User, Group
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+
+@api_view(['POST'])
+def register_basic_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email')
+    
+    if not username or not password or not email:
+        return JsonResponse({'error': 'Missing credentials'}, status=400)
+    
+    # Check if username already exists
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'error': 'Username already exists'}, status=400)
+    
+    user = User.objects.create_user(username=username, password=password, email=email)
+    
+    # Add user to the Basic User group
+    basic_user_group = Group.objects.get(name='Basic User')
+    basic_user_group.user_set.add(user)
+    
+    return JsonResponse({'message': 'User registered successfully'}, status=201)
+
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+
+@api_view(['POST'])
+def user_login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    user = authenticate(request, username=username, password=password)
+    
+    if user is not None:
+        login(request, user)
+        
+        # Retrieve user roles (groups)
+        roles = [group.name for group in user.groups.all()]
+
+        return JsonResponse({'message': 'Logged in successfully', 'roles': roles}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid credentials'}, status=401)
