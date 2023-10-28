@@ -60,9 +60,11 @@ def calculateIpaPred(request):
     ipa_pred_instance.save()
     return PredDataSerializer(ipa_pred_instance)
 
-from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User, Group
 
 @api_view(['POST'])
 def register_basic_user(request):
@@ -71,11 +73,11 @@ def register_basic_user(request):
     email = request.data.get('email')
     
     if not username or not password or not email:
-        return JsonResponse({'error': 'Missing credentials'}, status=400)
+        return Response({'error': 'Missing credentials'}, status=status.HTTP_400_BAD_REQUEST)
     
     # Check if username already exists
     if User.objects.filter(username=username).exists():
-        return JsonResponse({'error': 'Username already exists'}, status=400)
+        return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
     
     user = User.objects.create_user(username=username, password=password, email=email)
     
@@ -83,10 +85,17 @@ def register_basic_user(request):
     basic_user_group = Group.objects.get(name='Basic User')
     basic_user_group.user_set.add(user)
     
-    return JsonResponse({'message': 'User registered successfully'}, status=201)
+    token, created = Token.objects.get_or_create(user=user)
+    roles = [group.name for group in user.groups.all()]
+    
+    return Response({'token': token.key, 'message': 'User registered successfully', 'roles': roles}, status=status.HTTP_201_CREATED)
 
-from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
 @api_view(['POST'])
 def user_login(request):
@@ -96,11 +105,9 @@ def user_login(request):
     user = authenticate(request, username=username, password=password)
     
     if user is not None:
-        login(request, user)
-        
-        # Retrieve user roles (groups)
         roles = [group.name for group in user.groups.all()]
-
-        return JsonResponse({'message': 'Logged in successfully', 'roles': roles}, status=200)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key, 'message': 'Logged in successfully', 'roles': roles}, status=status.HTTP_200_OK)
     else:
-        return JsonResponse({'error': 'Invalid credentials'}, status=401)
+        return Response({'error':'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
