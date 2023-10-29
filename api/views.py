@@ -55,7 +55,8 @@ def calculateIpaPred(request):
         is_probable = is_probable,
         ipa_prob = ipa_proba,
         total_score = score,
-        form_data = form_data_instance
+        form_data = form_data_instance,
+        user = request.user if request.user.is_authenticated else None
     )
     ipa_pred_instance.save()
     return PredDataSerializer(ipa_pred_instance)
