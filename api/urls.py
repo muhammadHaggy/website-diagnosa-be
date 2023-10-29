@@ -7,6 +7,8 @@ urlpatterns = [
     path('register/', views.register_basic_user),
     path('',views.getData),
     path('pred/',views.getPred),
-    path('add/', views.addData)
+    path('add/', views.addData),
+    path('chart-data/', views.chart_data),
+    path('score-distribution/', views.score_distribution),
 ]
  

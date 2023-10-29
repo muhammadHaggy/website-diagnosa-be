@@ -56,7 +56,7 @@ def calculateIpaPred(request):
         ipa_prob = ipa_proba,
         total_score = score,
         form_data = form_data_instance,
-        user = request.user if request.user.is_authenticated else None
+        submitted_by = request.user if request.user.is_authenticated else None
     )
     ipa_pred_instance.save()
     return PredDataSerializer(ipa_pred_instance)
@@ -112,3 +112,45 @@ def user_login(request):
     else:
         return Response({'error':'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from base.models import IPAPrediction
+
+@api_view(['GET'])
+def chart_data(request):
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
+        return Response({"detail": "Permission Denied"}, status=403)
+    # Counter for is_probable and is_high_risk
+    is_probable_count = IPAPrediction.objects.filter(is_probable=True).count()
+    is_high_risk_count = IPAPrediction.objects.filter(is_high_risk=True).count()
+    
+    # Line chart data for form submissions by date
+    submissions_by_date = IPAPrediction.objects.annotate(date=TruncDate('submission_date'))\
+                                               .values('date')\
+                                               .annotate(count=Count('id'))\
+                                               .order_by('date')
+
+    data = {
+        'is_probable_count': is_probable_count,
+        'is_high_risk_count': is_high_risk_count,
+        'submissions_by_date': list(submissions_by_date),
+    }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+def score_distribution(request):
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
+        return Response({"detail": "Permission Denied"}, status=403)
+    # Getting the count of predictions for each score
+    score_counts = IPAPrediction.objects.values('total_score').annotate(count=Count('id')).order_by('total_score')
+    
+    data = {
+        'score_distribution': list(score_counts)
+    }
+
+    return Response(data)

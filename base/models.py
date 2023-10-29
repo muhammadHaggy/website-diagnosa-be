@@ -17,4 +17,4 @@ class IPAPrediction(models.Model):
     is_probable = models.BooleanField(default=False)
     is_high_risk = models.BooleanField(default=False)
     submission_date = models.DateTimeField(default=timezone.now)
-    submitted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="predictions")
+    submitted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="predictions", default=None)
