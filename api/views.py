@@ -158,3 +158,17 @@ def score_distribution(request):
     }
 
     return Response(data)
+
+@api_view(['GET'])
+def probability_distribution(request):
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
+        return Response({"detail": "Permission Denied"}, status=403)
+    
+    # Getting the count of predictions for each probability
+    prob_counts = IPAPrediction.objects.values('ipa_prob').annotate(count=Count('id')).order_by('ipa_prob')
+    
+    data = {
+        'probability_distribution': list(prob_counts)
+    }
+
+    return Response(data)
