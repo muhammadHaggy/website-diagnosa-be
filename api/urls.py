@@ -10,5 +10,6 @@ urlpatterns = [
     path('add/', views.addData),
     path('chart-data/', views.chart_data),
     path('score-distribution/', views.score_distribution),
+    path('probability-distribution/', views.probability_distribution),
 ]
  
