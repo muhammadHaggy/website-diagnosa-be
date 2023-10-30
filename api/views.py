@@ -119,27 +119,31 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from base.models import IPAPrediction
 
+from django.db.models.functions import TruncWeek
+
 @api_view(['GET'])
 def chart_data(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
         return Response({"detail": "Permission Denied"}, status=403)
+    
     # Counter for is_probable and is_high_risk
     is_probable_count = IPAPrediction.objects.filter(is_probable=True).count()
     is_high_risk_count = IPAPrediction.objects.filter(is_high_risk=True).count()
     
-    # Line chart data for form submissions by date
-    submissions_by_date = IPAPrediction.objects.annotate(date=TruncDate('submission_date'))\
-                                               .values('date')\
+    # Line chart data for form submissions grouped by week
+    submissions_by_week = IPAPrediction.objects.annotate(week=TruncWeek('submission_date'))\
+                                               .values('week')\
                                                .annotate(count=Count('id'))\
-                                               .order_by('date')
+                                               .order_by('week')
 
     data = {
         'is_probable_count': is_probable_count,
         'is_high_risk_count': is_high_risk_count,
-        'submissions_by_date': list(submissions_by_date),
+        'submissions_by_week': list(submissions_by_week),
     }
 
     return Response(data)
+
 
 
 @api_view(['GET'])
