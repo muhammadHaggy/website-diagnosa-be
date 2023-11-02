@@ -121,6 +121,7 @@ from base.models import IPAPrediction
 
 from django.db.models.functions import TruncWeek
 
+
 @api_view(['GET'])
 def chart_data(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
@@ -130,6 +131,9 @@ def chart_data(request):
     is_probable_count = IPAPrediction.objects.filter(is_probable=True).count()
     is_high_risk_count = IPAPrediction.objects.filter(is_high_risk=True).count()
     
+    # Total count of IPA predictions
+    total_ipa_predictions = IPAPrediction.objects.count()
+
     # Line chart data for form submissions grouped by week
     submissions_by_week = IPAPrediction.objects.annotate(week=TruncWeek('submission_date'))\
                                                .values('week')\
@@ -139,6 +143,7 @@ def chart_data(request):
     data = {
         'is_probable_count': is_probable_count,
         'is_high_risk_count': is_high_risk_count,
+        'total_ipa_predictions': total_ipa_predictions,
         'submissions_by_week': list(submissions_by_week),
     }
 
