@@ -177,3 +177,67 @@ def probability_distribution(request):
     }
 
     return Response(data)
+
+# views.py
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django_ratelimit.decorators import ratelimit
+# from .models import IPAPrediction, FormData
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='ip', rate='1/m', block=True, method='POST')
+def send_email_to_submitter(request, prediction_id):
+    # Retrieve the IPAPrediction instance by ID
+    prediction = get_object_or_404(IPAPrediction, id=prediction_id)
+
+    # Check if submitted_by is not None and if the request user is the submitter
+    if prediction.submitted_by is None:
+        return HttpResponse("This prediction was submitted anonymously and has no associated email.", status=400)
+
+    if prediction.submitted_by != request.user:
+        return HttpResponse("Permission Denied: You can only send emails for predictions you submitted.", status=403)
+
+    # Get the submitter's email
+    submitter_email = prediction.submitted_by.email
+
+    # Retrieve the FormData instance
+    form_data = prediction.form_data
+
+     # Retrieve and format reported symptoms
+    symptoms = []
+    if form_data.is_pulmonary_TB: symptoms.append("Pulmonary TB")
+    if form_data.has_solid_organ_malignancy: symptoms.append("Solid Organ Malignancy")
+    if form_data.is_galactomannan_positive: symptoms.append("Galactomannan Positive")
+    if form_data.is_receiving_systemic_corticosteroids: symptoms.append("Receiving Systemic Corticosteroids")
+    symptoms_list = ", ".join(symptoms)
+
+    # Define email content
+    subject = 'Hasil Form Diagnosa'
+    from_email = 'no-reply@mikostop.com'  # Replace with your email
+
+    # Define context data for the template
+    context = {
+        'patient_first_name': prediction.submitted_by.username,
+        'symptoms_list': symptoms_list,
+        'total_score': prediction.total_score,
+        'risk_level': "High" if prediction.is_high_risk else "Low",
+        'ipa_prob': prediction.ipa_prob,
+        'prediction_id': prediction.id
+    }
+
+    # Load and render the email template
+    html_content = render_to_string('email_template.html', context)
+
+    # Create an email message
+    msg = EmailMultiAlternatives(subject, html_content, from_email, [submitter_email])
+    msg.attach_alternative(html_content, "text/html")
+
+    # Send email
+    msg.send()
+
+    return HttpResponse("Email sent successfully")

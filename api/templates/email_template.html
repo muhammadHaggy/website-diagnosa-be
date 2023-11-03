@@ -1,0 +1,69 @@
+<!-- templates/email_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            color: #333;
+            background-color: #f6f6f6;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .footer {
+            padding: 10px 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Hasil Form Diagnosa</h2>
+        </div>
+        <div class="content">
+            <p>Bapak/Ibu {{ patient_first_name }},</p>
+            <p> Terimakasih telah memberikan data gejala anda pada formulir diagnosis kami. Berdasarkan informasi yang disediakan, berikut adalah hasilnya:</p>
+            <ul>
+                <li><strong>Gejala yang dilaporkan:</strong> {{ symptoms_list }}</li>
+                <li><strong>Skor Pasien:</strong> {{ total_score }}</li>
+                <li><strong>Klasifikasi Level Risiko:</strong> {{ risk_level }}</li>
+                <li><strong>Kemungkinan Infeksi:</strong> {{ ipa_prob }}%</li>
+            </ul>
+            <p>ID submisi anda adalah: <strong>{{ prediction_id }}</strong>. Tolong cantumkan ID ini untuk komunikasi tentang diagnosis ini kedepannya.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2023, Pusat Mikosis Paru Indonesia. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
