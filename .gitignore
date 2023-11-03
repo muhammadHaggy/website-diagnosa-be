@@ -41,3 +41,4 @@ Pipfile.lock
 
 # Ignore any other files or directories specific to your project
 # Add them as needed
+.env
