@@ -66,21 +66,29 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User, Group
+from base.models import Profile
 
 @api_view(['POST'])
 def register_basic_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email')
-    
-    if not username or not password or not email:
+    first_name = request.data.get('first_name')  
+    last_name = request.data.get('last_name')  
+    age = request.data.get('age')  
+
+    if not username or not password or not email or not first_name or not last_name or age is None:
         return Response({'error': 'Missing credentials'}, status=status.HTTP_400_BAD_REQUEST)
     
     # Check if username already exists
     if User.objects.filter(username=username).exists():
         return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
     
-    user = User.objects.create_user(username=username, password=password, email=email)
+    # Create the user
+    user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+    
+    # Create the profile with the age
+    profile = Profile.objects.create(user=user, age=age)
     
     # Add user to the Basic User group
     basic_user_group = Group.objects.get(name='Basic User')
@@ -89,7 +97,8 @@ def register_basic_user(request):
     token, created = Token.objects.get_or_create(user=user)
     roles = [group.name for group in user.groups.all()]
     
-    return Response({'token': token.key, 'message': 'User registered successfully', 'roles': roles}, status=status.HTTP_201_CREATED)
+    return Response({'token': token.key, 'message': 'User registered successfully', 'roles': roles, 'age': profile.age}, status=status.HTTP_201_CREATED)
+
 
 
 from rest_framework import status
