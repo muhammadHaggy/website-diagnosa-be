@@ -88,7 +88,7 @@ def register_basic_user(request):
     user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
     
     # Create the profile with the age
-    profile = Profile.objects.create(user=user, age=age)
+    profile = Profile.objects.create(user=user, age=age, first_name=first_name, last_name=last_name)
     
     # Add user to the Basic User group
     basic_user_group = Group.objects.get(name='Basic User')
