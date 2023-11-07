@@ -131,6 +131,14 @@ from base.models import IPAPrediction
 from django.db.models.functions import TruncWeek
 
 
+from django.utils import timezone
+from django.db.models.functions import TruncWeek
+from django.db.models import Count
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from base.models import IPAPrediction
+from datetime import timedelta
+
 @api_view(['GET'])
 def chart_data(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
@@ -143,21 +151,52 @@ def chart_data(request):
     # Total count of IPA predictions
     total_ipa_predictions = IPAPrediction.objects.count()
 
-    # Line chart data for form submissions grouped by week
-    submissions_by_week = IPAPrediction.objects.annotate(week=TruncWeek('submission_date'))\
-                                               .values('week')\
-                                               .annotate(count=Count('id'))\
-                                               .order_by('week')
+    # # Get the earliest submission date from IPAPredictions, or use current time if none exist
+    # earliest_submission = IPAPrediction.objects.earliest('submission_date').submission_date if IPAPrediction.objects.exists() else timezone.now()
+
+
+    # Query the actual submission counts
+    submissions_by_week = IPAPrediction.objects\
+                                                .annotate(week=TruncWeek('submission_date'))\
+                                                .values('week')\
+                                                .annotate(count=Count('id'))\
+                                                .order_by('week')
+    
+    # get the earlist submission week date in submissions_by_week
+    earliest_submission_week = submissions_by_week[0]['week'].date() if submissions_by_week else timezone.now().date()
+
+
+    # Start the chart from one week before the earliest submission
+    start_date = earliest_submission_week - timedelta(weeks=1)
+
+    # get submissions_by_week count
+    submissions_by_week_count = len(submissions_by_week)
+
+    # Create the range of weeks for the chart data
+    weeks = [(start_date - timedelta(days=i)) for i in range(0, (10-submissions_by_week_count)*7, 7)]
+
+    # reverse the list so that the weeks are in ascending order
+    weeks.reverse()
+
+    # Create a dictionary of submissions by week with default count 0
+    submissions_dict = {week: 0 for week in weeks}
+    
+    # Update the dictionary with actual counts
+    for submission in submissions_by_week:
+        week = submission['week'].date()
+        submissions_dict[week] = submission['count']
+    
+    # Convert the dictionary back to a list of dictionaries
+    submissions_list = [{'week': week, 'count': count} for week, count in submissions_dict.items()]
 
     data = {
         'is_probable_count': is_probable_count,
         'is_high_risk_count': is_high_risk_count,
         'total_ipa_predictions': total_ipa_predictions,
-        'submissions_by_week': list(submissions_by_week),
+        'submissions_by_week': submissions_list,
     }
 
     return Response(data)
-
 
 
 @api_view(['GET'])
