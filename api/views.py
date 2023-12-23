@@ -279,7 +279,7 @@ def send_email_to_submitter(request, prediction_id):
     }
 
     # Load and render the email template
-    html_content = render_to_string('email_template_v2.html', context)
+    html_content = render_to_string('email_template_v3.html', context)
 
     # Create an email message
     msg = EmailMultiAlternatives(subject, html_content, from_email, [submitter_email])

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aspergillosis Risk Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: blue;
+        }
+        .header img {
+            width: 100px; /* Adjust as needed */
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .score-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .score-table, .score-table th, .score-table td {
+            border: 1px solid #ddd;
+        }
+        .score-table th, .score-table td {
+            padding: 10px;
+            text-align: left;
+        }
+        .score-table th {
+            background-color: #f0f0f0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://mikologi.or.id/wp-content/uploads/2022/11/IMG-20220514-WA0002-scaled.jpg" alt="Mikologi Indonesia">
+            <h1 style="color: white;">SKORING DIAGNOSIS ASPERGILLOSIS PARU INVASIF</h1>
+            <img src="https://i.ibb.co/D7wW3k3/message-Image-1703325235429.jpg" alt="MikoStop" style="margin-right: 10px;">
+        </div>
+        <div class="content">
+            <p>Yth<br>Bapak/Ibu {{ patient_first_name }}</p>
+            <p>Terimakasih telah mengisi penilaian faktor risiko Aspergilosis Paru Invasif (API). Berdasarkan informasi yang telah anda berikan, berikut ringkasan simpulan dan rekomendasi untuk pasien:</p>
+            <table class="score-table">
+                <tr>
+                    <th>Nilai skor total</th>
+                    <td>: {{ total_score }}</td>
+                </tr>
+                <tr>
+                    <th>Probabilitas API</th>
+                    <td>: {{ ipa_prob }}%</td>
+                </tr>
+                <tr>
+                    <th>Kriteria</th>
+                    <td>{% if is_high_risk %}
+                        Berisiko mengalami Aspergilosis Paru Invasif (API)
+                    {% else %}
+                        Tidak berisiko mengalami Aspergilosis Paru Invasif (API)
+                    {% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Rekomendasi tatalaksana</th>
+                    <td>: {% if is_high_risk %}
+                        Terapi obat antijamur sistemik yang sesuai (vorikonazol).
+                    {% else %}
+                        Lanjutkan pemantauan.
+                    {% endif %}</td>
+                </tr>
+            </table>
+            <p class="footer">Semua perhitungan faktor risiko dan hasil penilaian skoring harus dikonfirmasi oleh dokter sebelum digunakan untuk tatalaksana pasien.</p>
+        </div>
+    </div>
+</body>
+</html>
