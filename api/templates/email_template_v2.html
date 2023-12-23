@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skoring Diagnosis Aspergilosis Paru Invasif</title>
+
+    <style>
+        body {
+
+            font-family: Arial, sans-serif;
+
+            margin: 0;
+
+            padding: 0;
+
+            background-color: #F6F6F6;
+
+        }
+
+        table {
+
+            border-spacing: 0;
+
+        }
+
+        td {
+
+            padding: 0;
+
+        }
+
+        img {
+
+            border: 0;
+
+        }
+
+        .wrapper {
+
+            width: 100%;
+
+            table-layout: fixed;
+
+            background-color: #F6F6F6;
+
+            padding-bottom: 40px;
+
+        }
+
+        .webkit {
+
+            max-width: 600px;
+
+            background-color: #FFFFFF;
+
+        }
+
+        .outer {
+
+            margin: 0 auto;
+
+            width: 100%;
+
+            max-width: 600px;
+
+            border-spacing: 0;
+
+            font-family: Arial, sans-serif;
+
+            color: #4A4A4A;
+
+        }
+
+        .header {
+
+            background-color: blue;
+
+            color: white;
+
+            padding: 10px;
+
+            text-align: center;
+
+        }
+
+        .header img {
+
+            height: 80px;
+
+        }
+
+        img {
+            height: 80px;
+        }
+
+        .header h1,
+
+        .header h2 {
+
+            margin: 0;
+
+            line-height: 1.2;
+
+            font-size: 1.2em;
+
+            color: white;
+
+        }
+
+        .header h2 {
+
+            color: yellow;
+            font-size: 1.0em;
+
+
+        }
+
+        .content-box {
+
+            border: 1px solid black;
+
+            padding: 10px;
+
+            margin: 20px;
+
+        }
+
+        .footer {
+
+            text-align: center;
+
+            padding: 10px;
+
+            background-color: #F6F6F6;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <center class="wrapper">
+
+        <div class="webkit">
+
+            <table class="outer" align="center">
+
+                <tr>
+
+
+                    <td class="header" style="display: flex; flex-direction: row; align-items: center;">
+                        <img src="https://mikologi.or.id/wp-content/uploads/2022/11/IMG-20220514-WA0002-scaled.jpg" alt="IPMCP Logo">
+                        <div style="display: flex; flex-direction: column; margin-left: 10px;">
+                            <h1>SKORING DIAGNOSIS ASPERGILOSIS PARU INVASIF (API)</h1>
+                            <h2>Penilaian faktor risiko pasien mengalami Aspergilosis Paru Invasif</h2>
+                        </div>
+                        <img src="https://i.ibb.co/D7wW3k3/message-Image-1703325235429.jpg" alt="MikoStop Logo">
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+
+                        <table class="content-box" align="center">
+
+                            <tr>
+
+                                <td>
+
+                                    <p>Yth<br>Bapak/Ibu {{ patient_first_name }}</p>
+
+                                    <p>Terimakasih telah mengisi penilaian faktor risiko Aspergilosis Paru Invasif
+                                        (API). Berdasarkan informasi yang
+
+                                        telah anda berikan, berikut ringkasan simpulan dan rekomendasi untuk pasien:</p>
+
+                                    <p>Nilai skor total : {{ total_score }}</p>
+
+                                    <p>Probabilitas API : {{ ipa_prob }}%</p>
+
+                                    <p>
+                                        {% if is_high_risk %}
+                                            Kriteria : Berisiko mengalami Aspergilosis Paru Invasif (API)
+                                        {% else %}
+                                            Kriteria : Tidak berisiko mengalami Aspergilosis Paru Invasif (API)
+                                        {% endif %}
+                                    </p>
+
+                                    {% if is_high_risk %}
+                                        <p>Rekomendasi tatalaksana:<br>Terapi obat antijamur sistemik yang sesuai (vorikonazol).</p>
+                                    {% else %}
+                                        <p>Rekomendasi tatalaksana:<br>Lanjutkan pemantauan.</p>
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="footer">
+
+                        <p>Semua perhitungan faktor risiko dan hasil penilaian skoring harus dikonfirmasi oleh dokter
+                            sebelum digunakan
+
+                            untuk tatalaksana pasien.</p>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+    </center>
+
+</body>
+
+</html>

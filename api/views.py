@@ -265,7 +265,7 @@ def send_email_to_submitter(request, prediction_id):
     symptoms_list = ", ".join(symptoms)
 
     # Define email content
-    subject = 'Hasil Form Diagnosa'
+    subject = f'Hasil Penilaian Skoring Diagnosis Aspergilosis Paru Invasif (ID: {prediction.id})'
     from_email = 'no-reply@mikostop.com'  # Replace with your email
 
     # Define context data for the template
@@ -273,13 +273,13 @@ def send_email_to_submitter(request, prediction_id):
         'patient_first_name': prediction.submitted_by.username,
         'symptoms_list': symptoms_list,
         'total_score': prediction.total_score,
-        'risk_level': "High" if prediction.is_high_risk else "Low",
         'ipa_prob': prediction.ipa_prob,
-        'prediction_id': prediction.id
+        'prediction_id': prediction.id,
+        'is_high_risk': prediction.is_high_risk,
     }
 
     # Load and render the email template
-    html_content = render_to_string('email_template.html', context)
+    html_content = render_to_string('email_template_v2.html', context)
 
     # Create an email message
     msg = EmailMultiAlternatives(subject, html_content, from_email, [submitter_email])
