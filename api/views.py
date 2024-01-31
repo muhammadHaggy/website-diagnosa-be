@@ -25,6 +25,7 @@ def addData(request):
     return Response(response.data)
 
 def calculateIpaPred(request):
+    print(request.user.is_authenticated)
     serializer = FormDataSerializer(data=request.data)
     proba_list = [10.4, 14.8, 20.6, 28.0, 36.8, 46.6, 56.6, 66.1]
     score = 0
@@ -279,7 +280,7 @@ def send_email_to_submitter(request, prediction_id):
     }
 
     # Load and render the email template
-    html_content = render_to_string('email_template_v3.html', context)
+    html_content = render_to_string('email_template_v4.html', context)
 
     # Create an email message
     msg = EmailMultiAlternatives(subject, html_content, from_email, [submitter_email])
